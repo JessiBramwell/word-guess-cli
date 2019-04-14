@@ -3,7 +3,8 @@ var Letter = require('./Letter')
 function Word(word) {
   this.letterArray = [];
   this.word = word;
-  this.completed = false
+  this.incorrect = 7;
+  this.completed = false;
   this.wordToArray = function () {
     for (let letter of this.word) {
       this.letterArray.push(new Letter(letter));
@@ -11,7 +12,7 @@ function Word(word) {
   },
   this.wordToArray()
   this.display = function() {
-    var show
+    var show = ''
     this.letterArray.forEach(function(item) {
       show += item.toString() + ' '
     })
@@ -19,22 +20,24 @@ function Word(word) {
   },
   this.display()
   this.guess = function (g) {
+    if (this.word.includes(g)) {
+      this.letterArray.forEach(function(item) {
+        item.compair(g)    
+      })  
+      this.display()     
+    } else {      
+      this.incorrect--     
+    }
+    this.update()
+  },
+  this.update = function() {
     var count = 0
-    this.letterArray.forEach(function(item) {
-      item.compair(g)    
-      if (item.guessed) count++  
+    this.letterArray.forEach(function (item) {
+      if (item.guessed) count++
     })
-    if(count === word.length) this.completed = true
-    // console.log(test.letterArray)
-    this.display()
+    if (count === word.length) this.completed = true    
+    
   }
 }
-
-// var test = new Word('test')
-// console.log(test.letterArray.toString());
-// console.log(test.);
-// console.log(test.letterArray)
-// test.guess('t')
-// console.log(test.letterArray)
 
 module.exports = Word;
