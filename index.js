@@ -1,23 +1,28 @@
-var Word = require('./Word');
-var inquirer = require('inquirer')
-var output = require('./output')
-var chalk = require('chalk')
-var word, score, wordArray;
+const Word = require('./Word');
+const inquirer = require('inquirer')
+const output = require('./output')
+const chalk = require('chalk')
+let word, score, wordArray;
 
+// Init word guess game
 function init() {
-  wordArray = output.wordsList
+  // Make a copy of 'wordsList'
+  wordArray = output.wordsList.slice(0)
   score = 0;
-  wordSelect()
+  wordSelect(wordArray)
 }
 
-function wordSelect() {
-  word = wordArray[Math.floor(Math.random() * wordArray.length)]
+// Select a random word and remove it from the array
+// Create a new Word object
+function wordSelect(arr) {
+  word = arr[Math.floor(Math.random() * arr.length)]
   word = new Word(word);
-  var x = wordArray.indexOf(word.word)
-  wordArray.splice(x, 1)
+  var x = arr.indexOf(word.word)
+  arr = arr.splice(x, 1)
 }
 
-inquirer.prompt([output.play]).then(function (res) {
+// Prompt to begin game
+inquirer.prompt([output.prompt.play]).then((res) => {
   if (res.play) {
     init();
     play();
@@ -41,43 +46,38 @@ function play() {
   }
 }
 
+// Prompt for the users next guess
 function keepGuessing() {
   console.log(chalk.gray('You have ' + chalk.cyan(word.incorrect) + ' incorrect guesses left'))
 
-  inquirer.prompt([output.guess]).then(function (res) {
+  inquirer.prompt([output.prompt.guess]).then((res) => {
+    // Determine if the user is attempting to guess the whole word
     if (res.guess.length === word.word.length) {
       wordGuess(res.guess)
     } else {
       word.guess(res.guess)
       play()
     }
-  })
+  });
 }
+
+// Increase score and prompt for the next word
 function nextWord() {
   score++
   console.log(chalk.whiteBright('Score: ') + chalk.cyanBright(score));
-  if (score > 2) {
+  if (score > 5) {
     win();
   } else {
-    inquirer.prompt([output.next]).then(function (res) {
+    inquirer.prompt([output.prompt.next]).then((res) => {
       if (res.next) {
-        wordSelect()
+        wordSelect(wordArray)
         play()
       }
     });
   }
 }
-function loss() {
-  console.log('You ran out of guesses. The word was ' + chalk.whiteBright(word.word));
-  return
 
-}
-function win() {
-  inquirer.prompt([output.newGame]).then(function (res) {
-    if (res.newGame) init();
-  })
-}
-
+// Called when the user attempts to guess the entire word. Results in an automatic loss if worng 
 function wordGuess(res) {
   if (res === word.word) {
     console.log('You guessed the whole word!');
@@ -86,6 +86,17 @@ function wordGuess(res) {
     console.log('Nice try');
     loss();
   }
+}
+
+function loss() {
+  console.log('You ran out of guesses. The word was ' + chalk.whiteBright(word.word));
+  return
+}
+
+function win() {
+  inquirer.prompt([output.prompt.newGame]).then((res) => {
+    if (res.newGame) init();
+  });
 }
 
 

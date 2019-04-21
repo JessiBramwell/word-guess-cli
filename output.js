@@ -1,7 +1,7 @@
-module.exports = {
+const prompt = {
   play: {
     type: 'confirm',
-    message: 'Would you like to play hangman? It\s Game Show themed',
+    message: 'Would you like to play hangman? It\'s Game Show themed',
     name: 'play'
   },
   guess: {
@@ -19,17 +19,21 @@ module.exports = {
     name: 'newGame'
   },
 }
-  
-  
-module.exports.wordsList = [
+
+const wordsList = [
   'jeopardy',
   'wheel of fortune',
   'family feud',
   'the price is right',
   'who wants to be a millionaire',
-  'doublt dare',
+  'double dare',
   'beat the clock',
   'hollywood squares',
   'the newlywed game',
   'the dating game'
 ]
+
+module.exports = {
+  prompt: prompt,
+  wordsList: wordsList
+}
