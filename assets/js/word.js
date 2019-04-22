@@ -1,4 +1,4 @@
-var Letter = require('./Letter')
+var Letter = require('./letter')
 
 // Word constructor 
 function Word(word) {
